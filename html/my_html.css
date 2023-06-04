@@ -54,37 +54,37 @@ button {
     transition: background-color 0.3s ease;
 }
 #pauseBtn{
-    position:absolute;
+    position:fixed;
     bottom:17%;
     left:40%;
 }
 #startBtn{
-    position:absolute;
+    position:fixed;
     bottom:59%;
     left:15%;
 }
 #increase-btn1 {
-    position:absolute;
+    position:fixed;
     left: 17%;
     bottom:9%;
 }
 #decrease-btn1 {
-    position:absolute;
+    position:fixed;
     left: 19%;
     bottom:9%;
 }
 #increase-btn2 {
-    position:absolute;
+    position:fixed;
     right: 19%;
     bottom:25%;
 }
 #decrease-btn2 {
-    position:absolute;
+    position:fixed;
     right: 17%;
     bottom:25%;
 }
 #speedRange{
-    position:absolute;
+    position:fixed;
     bottom:17%;
     left:50%;
 }
@@ -102,7 +102,7 @@ button:hover {
     max-height:300px;
 }
 footer{
-    position:absolute;
+    position:fixed;
     bottom:0;
     width:100%;
     height:30px;
