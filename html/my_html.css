@@ -1,0 +1,147 @@
+ul.head{
+    border-style: groove;
+    position: fixed;
+    top:0;
+    width:99%;
+    list-style-type: none;
+    margin-top:0;
+    padding-left: 0px;
+    /*创建一个新的BFC*/
+    overflow: auto;
+    background:indianred;
+    border-radius:8px;/*圆角边框*/
+    font-size:18px;
+}
+li a{
+    /*    !*实现横向导航栏, display:inline;也可，如果你想链接到具有相同的大小，你必须使用浮动的方法*!*/
+    float:left;
+    height:20px;
+    text-align: center;
+    color: white;
+    background-color: darksalmon;
+    padding: 12px 20px;
+    text-decoration: none;
+}
+li a:hover{
+    background-color: coral;
+    color: black;
+}
+body{
+    background-attachment: fixed;
+    background-image: url(../resources/image/blue_pink.jpg);
+    background-size:100%;
+}
+iframe{
+    height:300px;
+    width:400px;
+    float:right;
+}
+select{
+    font-size: 20px;
+    color:olive;
+    background-color:cornsilk;
+}
+div{
+    margin-top:60px;
+}
+input{font-size: 16px;}
+button {
+    border-radius:5px;/*圆角边框*/
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+#pauseBtn{
+    position:absolute;
+    bottom:17%;
+    left:40%;
+}
+#startBtn{
+    position:absolute;
+    bottom:59%;
+    left:15%;
+}
+#increase-btn1 {
+    position:absolute;
+    left: 17%;
+    bottom:9%;
+}
+#decrease-btn1 {
+    position:absolute;
+    left: 19%;
+    bottom:9%;
+}
+#increase-btn2 {
+    position:absolute;
+    right: 19%;
+    bottom:25%;
+}
+#decrease-btn2 {
+    position:absolute;
+    right: 17%;
+    bottom:25%;
+}
+#speedRange{
+    position:absolute;
+    bottom:17%;
+    left:50%;
+}
+button:hover {
+    background-color: #3e8e41;
+}
+#introduction{
+    margin-top: 20px;
+    width:300px;
+    border-style: groove;
+    font-size: 14px;
+    color:darkred;
+    overflow: auto;
+    min-height:300px;
+    max-height:300px;
+}
+footer{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:30px;
+    text-align: center;
+}
+#canvas{
+    width: 880px;
+    height: 490px;
+    /*width: 100%;*/
+    /*height: 100%;*/
+    /*margin: -210px auto;*/
+    /*border: 2px solid yellowgreen;*/
+    /*display: block;*/
+    /*overflow: auto;*/
+}
+
+.container {
+    height: 490px;
+    width: 880px;
+    /*width: 80%;*/
+    /*height: 100%;*/
+    margin: -225px auto;
+    border: 2px solid yellowgreen;
+    /*display: block;*/
+    box-sizing:border-box;
+    /*overflow: auto;*/
+}
+#log{
+    border:2px palegoldenrod;
+    position:absolute;
+    top:9%;
+    right:0.5%;
+    background-color:lightyellow;
+    height: 430px; /* 设置固定高度 */
+    width: 310px; /* 设置固定宽度 */
+    font-size: 16px; /* 设置默认字体大小 */
+    resize: none;
+    /* 其他样式属性 */
+}
+.red-text {
+    color: red;
+}

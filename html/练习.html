@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    #canvasContainer {
+      width: 500px;
+      height: 300px;
+      overflow: auto;
+    }
+    #myCanvas {
+      background-color: lightgray;
+    }
+  </style>
+</head>
+<body>
+<div id="canvasContainer">
+  <canvas id="myCanvas" width="500" height="300"></canvas>
+</div>
+
+<script>
+  var canvasContainer = document.getElementById("canvasContainer");
+  var canvas = document.getElementById("myCanvas");
+  var ctx = canvas.getContext("2d");
+
+  var rectX = 100;
+  var rectY = 100;
+  var rectWidth = 100;
+  var rectHeight = 100;
+
+  function drawRect() {
+    ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
+  }
+
+  function animate() {
+    rectX += 5;
+    drawRect();
+
+    // 当矩形的右边界超出 Canvas 的宽度时
+    if (rectX + rectWidth > canvas.width) {
+      // 将 Canvas 容器的水平滚动位置设置为矩形的右边界减去容器的宽度
+      canvasContainer.scrollLeft = rectX + rectWidth - canvasContainer.offsetWidth;
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  // 设置 Canvas 宽度为矩形的初始位置加上两倍的矩形宽度
+  canvas.width = rectX + 2 * rectWidth;
+
+  animate();
+
+</script>
+</body>
+</html>

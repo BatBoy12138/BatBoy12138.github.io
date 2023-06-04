@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>进程调度算法可视化</title>
+    <style>
+        .process {
+            border: 1px solid black;
+            margin: 10px;
+            padding: 10px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background-color: blue;
+        }
+    </style>
+</head>
+<body>
+<h1>进程调度算法可视化</h1>
+<label for="num-processes">进程数量:</label>
+<input type="number" id="num-processes" min="1" max="10">
+<br><br>
+<button onclick="createProcesses()">创建进程</button>
+<br><br>
+<label for="algorithm">选择算法:</label>
+<select id="algorithm">
+    <option value="FCFS">先来先服务</option>
+    <option value="SJF">短作业优先</option>
+    <option value="RR">轮转调度</option>
+</select>
+<br><br>
+<button onclick="runAlgorithm()">运行算法</button>
+<br><br>
+<div id="processes"></div>
+<div id="timeline"></div>
+
+<script>
+    let processes = [];
+    let algorithm;
+    let numProcessesInput = document.getElementById("num-processes");
+    let timeline = document.getElementById("timeline");
+
+    function createProcesses() {
+        let numProcesses = parseInt(numProcessesInput.value);
+        processes = [];
+        let processesDiv = document.getElementById("processes");
+        processesDiv.innerHTML = "";
+
+        for (let i = 1; i <= numProcesses; i++) {
+            let arrivalTime = parseInt(prompt(`输入进程${i}到达时间:`));
+            let burstTime = parseInt(prompt(`输入进程${i}执行时间:`));
+            processes.push({
+                id: i,
+                arrivalTime: arrivalTime,
+                burstTime: burstTime,
+                remainingTime: burstTime,
+                status: "ready",
+                startTime: 0,
+                endTime: 0,
+            });
+
+            let processDiv = document.createElement("div");
+            processDiv.id = `process-${i}`;
+            processDiv.classList.add("process");
+            processDiv.innerHTML = `进程${i} (到达时间: ${arrivalTime}, 执行时间: ${burstTime})`;
+            processesDiv.appendChild(processDiv);
+        }
+    }
+
+    function runAlgorithm() {
+        algorithm = document.getElementById("algorithm").value;
+        timeline.innerHTML = "";
+
+        if (algorithm === "FCFS") {
+            runFCFS();
+        } else if (algorithm === "SJF") {
+            runSJF();
+        } else if (algorithm === "RR") {
+            let quantum = parseInt(prompt("输入时间片大小:"));
+            runRR(quantum);
+        }
+    }
+
+    function updateTimeline(time, process) {
+        let processDiv = document.getElementById(`process-${process.id}`);
+        let progressBar = processDiv.querySelector(".progress-bar");
+        let statusDiv = processDiv.querySelector(".status");
+
+        if (process.status === "ready") {
+            statusDiv.textContent = "就绪";
+            progressBar.style.width = "0%";
+        } else if (process.status === "running") {
+            statusDiv.textContent = "运行中";
+            progressBar.style.width = `${100 * (1 - process.remainingTime / process.burstTime)}%`;
+        } else if (process.status === "finished") {
+            statusDiv.textContent = "完成";
+            progressBar.style.width = "100%";
+        }}
+    if (time === process.startTime) {
+        processDiv.innerHTML += `<div class="status">状态: ${process.status}</div>`;
+        progressBar = document.createElement("div");
+        progressBar.classList.add("progress-bar");
+        processDiv.appendChild(progressBar);
+    }
+    function runFCFS() {
+        let currentTime = 0;
+        for (let i = 0; i < processes.length; i++) {
+            let process = processes[i];
+            process.startTime = currentTime;
+            process.status = "running";
+            updateTimeline(currentTime, process);
+            currentTime += process.burstTime;
+            process.endTime = currentTime;
+            process.status = "finished";
+            updateTimeline(currentTime, process);
+        }
+    }
+
+    function runSJF() {
+        let currentTime = 0;
+        let remainingProcesses = processes.slice();
+
+        while (remainingProcesses.length > 0) {
+            remainingProcesses.sort((a, b) => a.burstTime - b.burstTime);
+            let process = remainingProcesses[0];
+            remainingProcesses.splice(0, 1);
+
+            process.startTime = currentTime;
+            process.status = "running";
+            updateTimeline(currentTime, process);
+
+            currentTime += process.burstTime;
+            process.endTime = currentTime;
+            process.status = "finished";
+            updateTimeline(currentTime, process);
+        }
+    }
+
+    function runRR(quantum) {
+        let currentTime = 0;
+        let remainingProcesses = processes.slice();
+
+        while (remainingProcesses.length > 0) {
+            let process = remainingProcesses[0];
+
+            if (process.status === "ready") {
+                process.startTime = currentTime;
+                process.status = "running";
+                updateTimeline(currentTime, process);
+            }
+
+            currentTime += Math.min(process.remainingTime, quantum);
+            process.remainingTime -= Math.min(process.remainingTime, quantum);
+
+            if (process.remainingTime === 0) {
+                process.endTime = currentTime;
+                process.status = "finished";
+                updateTimeline(currentTime, process);
+                remainingProcesses.splice(0, 1);
+            } else {
+                process.status = "ready";
+                updateTimeline(currentTime, process);
+                remainingProcesses.splice(0, 1);
+                remainingProcesses.push(process);
+            }
+        }
+    }
+</script>
+</body>
+</html>

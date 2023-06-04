@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Canvas绘制矩形</title>
+    <style>
+        #canvasContainer {
+            width: 400px;
+            height: 400px;
+            overflow: auto;
+        }
+
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+<div id="canvasContainer">
+    <canvas id="myCanvas" width="500" height="500"></canvas>
+</div>
+
+<script>
+    // 假设 canvas 是你的画布元素
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 定义画布的宽度和高度
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+
+    // 定义矩形的初始位置和尺寸
+    let rectX = 10;
+    let rectY = 10;
+    const rectWidth = 50;
+    const rectHeight = 50;
+
+    function drawRect() {
+        // 清空画布
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        // 检查矩形是否超出画布右边界
+        if (rectX + rectWidth > canvasWidth) {
+            rectX = 10; // 重置矩形位置到起始位置
+        }
+
+        // 绘制矩形
+        ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
+
+        // 更新矩形位置
+        rectX += 5; // 假设每次水平移动 5 个单位
+
+        // 使用 requestAnimationFrame 调用 drawRect 函数，实现动画效果
+        requestAnimationFrame(drawRect);
+    }
+
+    // 调用 drawRect 函数开始绘制矩形
+    drawRect();
+</script>
+</body>
+</html>

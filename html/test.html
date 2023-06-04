@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Animation</title>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500"></canvas>
+<button id="startBtn">开始</button>
+<button id="pauseBtn">暂停</button>
+<input type="range" id="speedRange" min="1" max="10" value="5" />
+<script>
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  const startBtn = document.getElementById("startBtn");
+  const pauseBtn = document.getElementById("pauseBtn");
+  const speedRange = document.getElementById("speedRange");
+  let requestId;
+  let flag = true;
+  let beginTime = 0;
+  let endTime = 0;
+  let beginX = 100;
+  let endX = 400;
+  let rectWidth = 50;
+  let speed = 5;
+
+  function animate(currentTime) {
+    if (!beginTime) beginTime = currentTime;
+    endTime = currentTime;
+    let progress = endTime - beginTime;
+    let distance = endX - beginX;
+    let moveDistance = (distance * progress) / 1000 / speed;
+    if (moveDistance < distance) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(beginX + moveDistance, 225, rectWidth, 50);
+      ctx.beginPath();
+      ctx.moveTo(100, 250);
+      ctx.lineTo(400, 250);
+      ctx.stroke();
+      requestId = requestAnimationFrame(animate);
+    } else {
+      beginTime = 0;
+      requestId = undefined;
+    }
+  }
+
+  function startAnimation() {
+    if (flag) {
+      requestId = requestAnimationFrame(animate);
+      flag = false;
+    }
+  }
+
+  function pauseAnimation() {
+    if (!flag) {
+      cancelAnimationFrame(requestId);
+      flag = true;
+    }
+  }
+
+  function changeSpeed() {
+    speed = speedRange.value;
+  }
+
+  startBtn.addEventListener("click", startAnimation);
+  pauseBtn.addEventListener("click", pauseAnimation);
+  speedRange.addEventListener("input", changeSpeed);
+</script>
+</body>
+</html>

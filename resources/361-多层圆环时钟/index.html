@@ -1,0 +1,85 @@
+﻿<!doctype html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="keywords" content="鱼C工作室|免费编程视频教学|Python教学|Web开发教学|全栈开发教学|C语言教学|汇编教学|Win32开发|加密与解密|Linux教学">
+	<meta name="description" content="鱼C工作室为大家提供最有趣的编程视频教学。">
+	<meta name="author" content="鱼C工作室">
+	<title>鱼C-进程时钟</title>
+	<script src="js/jquery.js"></script>
+	<link rel="stylesheet" href="css/fishc.css">
+</head>
+
+<body>
+	<div id="clock" class="progress-clock">
+		<button class="progress-clock__time-date" data-group="d" type="button">
+			<small data-unit="w">FishC</small><br>
+			<span data-unit="mo">FishC</span>
+			<span data-unit="d">520</span>
+		</button>
+		<button class="progress-clock__time-digit" data-unit="h" data-group="h" type="button">12</button><span
+			class="progress-clock__time-colon">:</span><button class="progress-clock__time-digit" data-unit="m"
+			data-group="m" type="button">00</button><span class="progress-clock__time-colon">:</span><button
+			class="progress-clock__time-digit" data-unit="s" data-group="s" type="button">00</button>
+		<span class="progress-clock__time-ampm" data-unit="ap">AM</span>
+		<svg class="progress-clock__rings" width="256" height="256" viewBox="0 0 256 256">
+			<defs>
+				<linearGradient id="pc-red" x1="1" y1="0.5" x2="0" y2="0.5">
+					<stop offset="0%" stop-color="hsl(343,90%,55%)" />
+					<stop offset="100%" stop-color="hsl(323,90%,55%)" />
+				</linearGradient>
+				<linearGradient id="pc-yellow" x1="1" y1="0.5" x2="0" y2="0.5">
+					<stop offset="0%" stop-color="hsl(43,90%,55%)" />
+					<stop offset="100%" stop-color="hsl(23,90%,55%)" />
+				</linearGradient>
+				<linearGradient id="pc-blue" x1="1" y1="0.5" x2="0" y2="0.5">
+					<stop offset="0%" stop-color="hsl(223,90%,55%)" />
+					<stop offset="100%" stop-color="hsl(203,90%,55%)" />
+				</linearGradient>
+				<linearGradient id="pc-purple" x1="1" y1="0.5" x2="0" y2="0.5">
+					<stop offset="0%" stop-color="hsl(283,90%,55%)" />
+					<stop offset="100%" stop-color="hsl(263,90%,55%)" />
+				</linearGradient>
+			</defs>
+			<!-- 日期 -->
+			<g data-units="d">
+				<circle class="progress-clock__ring" cx="128" cy="128" r="74" fill="none" opacity="0.1"
+					stroke="url(#pc-red)" stroke-width="12" />
+				<circle class="progress-clock__ring-fill" data-ring="mo" cx="128" cy="128" r="74" fill="none"
+					stroke="url(#pc-red)" stroke-width="12" stroke-dasharray="465 465" stroke-dashoffset="465"
+					stroke-linecap="round" transform="rotate(-90,128,128)" />
+			</g>
+			<!-- 时 -->
+			<g data-units="h">
+				<circle class="progress-clock__ring" cx="128" cy="128" r="90" fill="none" opacity="0.1"
+					stroke="url(#pc-yellow)" stroke-width="12" />
+				<circle class="progress-clock__ring-fill" data-ring="d" cx="128" cy="128" r="90" fill="none"
+					stroke="url(#pc-yellow)" stroke-width="12" stroke-dasharray="565.5 565.5" stroke-dashoffset="565.5"
+					stroke-linecap="round" transform="rotate(-90,128,128)" />
+			</g>
+			<!-- 分 -->
+			<g data-units="m">
+				<circle class="progress-clock__ring" cx="128" cy="128" r="106" fill="none" opacity="0.1"
+					stroke="url(#pc-blue)" stroke-width="12" />
+				<circle class="progress-clock__ring-fill" data-ring="h" cx="128" cy="128" r="106" fill="none"
+					stroke="url(#pc-blue)" stroke-width="12" stroke-dasharray="666 666" stroke-dashoffset="666"
+					stroke-linecap="round" transform="rotate(-90,128,128)" />
+			</g>
+			<!-- 秒 -->
+			<g data-units="s">
+				<circle class="progress-clock__ring" cx="128" cy="128" r="122" fill="none" opacity="0.1"
+					stroke="url(#pc-purple)" stroke-width="12" />
+				<circle class="progress-clock__ring-fill" data-ring="m" cx="128" cy="128" r="122" fill="none"
+					stroke="url(#pc-purple)" stroke-width="12" stroke-dasharray="766.5 766.5" stroke-dashoffset="766.5"
+					stroke-linecap="round" transform="rotate(-90,128,128)" />
+			</g>
+		</svg>
+	</div>
+
+	<script src="js/fishc.js"></script>
+
+</body>
+
+</html>

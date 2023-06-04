@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="操作系统进程调度算法可视化模拟"
+          content="对各类调度算法进行可视化展示">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>OS Visulization</title>
+    <link rel="stylesheet" href="my_html.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="Fcfs.js"></script>
+    <script src="SJF.js"></script>
+    <script src="RR.js"></script>
+    <script src="NPPS.js"></script>
+    <script src="PPS.js"></script>
+    <script src="HRRN.js"></script>
+    <script src="MLFQ.js"></script>
+</head>
+
+<body>
+<audio src="../resources/audio/千秋%20《古剑奇谭三》主题曲.mp3" autoplay loop="-1"></audio>
+<ul class="head">
+    <li><a href="https://baidu.com">首页</a></li>
+    <li><a href="https://visualgo.net/zh" target="_blank">数据结构可视化</a></li>
+    <li><a href="文档.html" target="_blank">文档</a></li>
+    <li style="float:right"><a href="关于.html">关于</a></li>
+</ul>
+<!--    <iframe id="ssv3-multi-click" src="../resources/361-多层圆环时钟"></iframe>-->
+<div id="input_container">
+    <h1>操作系统进程调度算法选择：</h1>
+    <select autofocus id="option_id" onchange="gradeChange()">
+        <option value="FCFS">先来先服务调度算法</option>
+        <option value="SJF">短作业优先调度算法</option>
+        <option value="RR">时间片轮转调度算法</option>
+        <option value="NPPS" id="NPPS">非抢占式优先级调度算法</option>
+        <option value="PPS" id="PPS">抢占式优先级调度算法</option>
+        <option value="HRRN" id="HRRN">高响应比优先调度算法</option>
+        <option value="MLFQ" id="MLFQ">多级反馈队列调度算法</option>
+    </select>
+    <br><br>
+    <label>输入进程：</label><br><br>
+    <input id="input_text" type="text" placeholder="进程ID, 到达时间, 运行时间;" size="28px">
+    <button id="startBtn">运行</button>
+</div>
+<button id="pauseBtn">暂停</button>
+<input type="range" id="speedRange" min="1" max="10" value="0"/>
+<div class="container" id="mouse-coordinates" >
+    <canvas id="canvas" width="880" height="490" overflow="auto"></canvas>
+</div>
+<button id="increase-btn1">+</button>
+<button id="decrease-btn1">-</button>
+<button id="increase-btn2">+</button>
+<button id="decrease-btn2">-</button>
+<textarea id="log" rows="29" cols="45" readonly></textarea>
+<p id="introduction"></p>
+<footer>©2023 1907040546-喻焕燃</footer>
+
+<script>
+    // 获取 Canvas 元素和 2D 绘图上下文对象
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let pause_flag = false;
+    let speed = 0;
+    let animationId; //定义变量来存储 requestAnimationFrame 返回的 ID
+    const startBtn = document.getElementById("startBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+    const speedRange = document.getElementById("speedRange");
+    const myselect = document.getElementById("option_id");
+
+    var input_div = document.createElement("div");
+    input_div.innerHTML = "<input type='text' id='rr_time_quantum' placeholder='时间片大小' readonly>";
+    document.getElementById("input_container").appendChild(input_div);
+
+    canvas.addEventListener("mousemove", function(event) {
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        // 显示坐标
+        document.getElementById("log").innerHTML = `相对坐标：(${x}, ${y})`;
+    });
+
+    //选择算法监听事件
+    function gradeChange() {
+        var index = myselect.selectedIndex;
+        // selectedIndex代表的是你所选中项的index
+        var value = myselect.options[index].value;
+        if (value === "NPPS"||value === "PPS") {
+            //var change_place = document.getElementById("input_text");
+            //change_place.placeholder= "555";原生方法
+            $("#input_text").attr("placeholder", "进程ID, 到达时间, 运行时间,优先级;");
+        } else {
+            $("#input_text").attr("placeholder", "进程ID, 到达时间, 运行时间;");
+        }
+        if(value==='FCFS'){
+            document.getElementById("log").style.display = "none";
+            $('#introduction').text('先来先服务调度算法是最简单的调度方法。其基本原则是，按照进程进入就绪队列的先后次序进行选择。对于进程调度来说，一旦一个进程得到处理机，它就一直运行下去，直到该进程完成任务或者因等待某事件而不能继续运行，才会让出处理机。先来先服务调度算法属于非剥夺方式。 从表面上看，这个方法对于所有进程都是公平的，并且一个进程的等待时间是可以预先估计的。但是从另一方面来说，这个方法并非公平，因为当一个大进程先到达就绪状态时，就会使许多小进程等待很长时间，增加了进程的平均周转时间，会引起许多小进程用户的不满。')
+        }
+        if(value==='SJF'){
+            document.getElementById("log").style.display = "none";
+            $('#introduction').text('短进程优先调度算法从进程的就绪队列中挑选那些运行时间（估计时间）最短的进程进入主存运行。这是一个非剥夺算法。它一旦选中某个短进程，就应该保证该进程尽可能快地完成运行并退出系统。这样减少了在就绪队列中等待的进程数，同时也缩短了进程的平均等待时间，提高了系统的吞吐量。但从另一方面来说，各进程的等待时间的变化范围较大，并且进程（尤其是大进程）的等待时间难以预先估计。也就是说，用户对他的进程什么时候完成心里没底。这样，当后续短进程过多时，大进程可能没有机会运行，导致“饿死”。而在先来先服务调度算法中，进程的等待和完成时间是可以预期的。 短进程优先调度算法要求事先能正确地了解一道作业或进程将运行多长时间。但通常一个进程没有这方面可供使用的信息，只能估计。在生产环境中，对于一道类似的作业可以提供大致合理的估计；而在程序开发环境中，用户难以知道他的程序大致将运行多长时间。 正因为此算法明显偏向短进程，而且进程的运行时间是估计的，所以用户可能把他的进程运行时间估计得过短，从而争取优先运行。为此，当一个进程的运行时间超过所估计的时间时，系统将停止这个进程，或对超时部分加价收费。 短进程优先调度算法和先来先服务调度算法都是非剥夺算法，因此均不适用于分时系统，因为不能保证对用户及时响应。')
+        }
+        if(value==='RR'){
+            document.getElementById("log").style.display = "none";
+            $('#introduction').text('时间片轮转调度算法也多用于进程调度。采用此算法的系统，其进程就绪队列往往按进程到达的时间来排序。进程调度程序总是选择就绪队列中的第一个进程，也就是说，按照先来先服务原则进行调度，但进程仅占用处理机一个时间片。在使用完一个时间片后，即使进程还没有完成其运行，它也必须让出（被剥夺）处理机给下一个就绪的进程。而被剥夺的进程返回就绪队列的末尾重新排队，等候再次运行。时间片轮转调度算法特别适合分时系统使用。当多个进程驻留主存时，在进程间转接的开销一般不是很大。 由于时间片值对计算机系统的有效操作影响很大，所以在设计此算法时，应考虑下列问题：时间片值如何选择？它是固定值还是可变值？它对所有用户都相同还是随不同用户而不同？显然，如果时间片值很大，大到一个进程足以完成其全部任务所需的时间，那么此时间片轮转调度算法就退化为先来先服务调度算法了。如果时间片值很小，那么处理机在进程间的切换工作过于频繁，使处理机的开销变得很大，而处理机真正用于运行用户程序的时间将会减少。通常，最佳的时间片值应能使分时用户得到好的响应时间，因此时间片值应大于大多数分时用户的询间时间，即当一个交互进程正在执行时，给它的时间片值相对来说略大些，使它足以产生一个IO请求：或者时间片值略大于大多数进程从计算到IO请求之间的间隔时间。这样可使用户进程工作在最高速度上，并且也减少了进程间切换的不必要的开销，提高了处理机和I/O设备的利用率，同时也能提供较好的响应时间。 各系统的最佳时间片值是不同的，而且随着系统负荷不同而有所变化。关于时间片值的更进一步考虑和时间片轮转调度算法参阅“多级反馈队列调度算法”。 特别要注意的是，时间片是否用完的判定程序是由时钟中断处理程序激活的，因此时间片值必须大于时钟中断间隔。');
+            $('#rr_time_quantum').prop('readonly', false);
+            //document.getElementById("rr_time_quantum").readOnly = false;  或者这样写
+        }
+        if(value==='PPS'){
+            document.getElementById("log").style.display = "none";
+            $('#introduction').text('优先级调度算法按照进程的优先级高低来进行调度，使高优先级进程优先得到处理机的调度算法称为优先级调度算法。进程的优先级可以由操作系统按一定原则赋予，也可以在操作系统外部安非，甚至可由用户支付高额费用来购买。 但在许多采用优先级调度算法的系统中，通常使用动态优先级。一个进程的优先级不是固定的，可能会随许多因素的变化而变化，例如，进程的等待时间、已使用的处理机时间或其他资源的使用情况。 优先级调度算法又可分为下述两种： ①非剥夺的优先级调度算法。一旦某个高优先级的进程得到处理机，就一直运行下去，直到由于其自身的原因（任务完成或等待事件）而主动让出处理机，才让另一个高优先级进程运行。 ②可剥夺的优先级调度算法。任何时刻都严格按照优先级高的进程在处理机上运行的原则进行调度，或者说，在处理机上运行的进程永远是就绪进程队列中优先级最高的进程。在进程运行过程中，一旦有另一个优先级更高的进程出现（如一个高优先级的等待状态进程因事件的到来而成为就绪状态），进程调度程序就迫使原运行进程让出处理机给更高优先级的进程使用，或称为抢占处理机。在UNIX系结中，其讲程调度算法属于“可剥夺的优先级调度算法”。每个进程的优先级都是动态优先级，由系统为各进程每隔一个时间间隔计算一次优先级。')
+        }
+        if(value==='NPPS'){
+            document.getElementById("log").style.display = "none";
+            $('#introduction').text('优先级调度算法按照进程的优先级高低来进行调度，使高优先级进程优先得到处理机的调度算法称为优先级调度算法。进程的优先级可以由操作系统按一定原则赋予，也可以在操作系统外部安非，甚至可由用户支付高额费用来购买。 但在许多采用优先级调度算法的系统中，通常使用动态优先级。一个进程的优先级不是固定的，可能会随许多因素的变化而变化，例如，进程的等待时间、已使用的处理机时间或其他资源的使用情况。 优先级调度算法又可分为下述两种： ①非剥夺的优先级调度算法。一旦某个高优先级的进程得到处理机，就一直运行下去，直到由于其自身的原因（任务完成或等待事件）而主动让出处理机，才让另一个高优先级进程运行。 ②可剥夺的优先级调度算法。任何时刻都严格按照优先级高的进程在处理机上运行的原则进行调度，或者说，在处理机上运行的进程永远是就绪进程队列中优先级最高的进程。在进程运行过程中，一旦有另一个优先级更高的进程出现（如一个高优先级的等待状态进程因事件的到来而成为就绪状态），进程调度程序就迫使原运行进程让出处理机给更高优先级的进程使用，或称为抢占处理机。在UNIX系结中，其讲程调度算法属于“可剥夺的优先级调度算法”。每个进程的优先级都是动态优先级，由系统为各进程每隔一个时间间隔计算一次优先级。')
+        }
+        if(value==='HRRN'){
+            document.getElementById("log").style.display = "block";
+            $('#introduction').text('给与每个作业一个动态的优先级，这个优先级是随着时间变化的变化的，等待时间不断地增加，这将让长作业的优先级在等待期间不断地增大，等待足够的时间，必然会得到处理机。该优先级的变化规则可以描述为：\n' +
+            '\n' +
+            '优先级 = （等待时间+要求服务时间）/要求服务时间。又因为，等待时间与要求服务时间之和为系统对作业的响应时间，所以优先级 = 响应时间/要求服务时间。\n' +
+            '\n' +
+            '规律：1.作业的等待时间相同，则要求服务的越短，优先级越高，类似于SJF算法。2.当要求服务的时间相同时，等得越久优先级越高，类似于FCFS算法。3.对于长作业来说，该算法实现了较好的折中。\n' +
+            '\n' +
+            '优点：算法折中，长短作业兼顾，时间分配较为均匀。\n' +
+            '\n' +
+            '缺点：每次计算响应比都会花费一定时间，即时间开销，其性能比SJF算法略差。');
+            $('#log').val('HRRN响应比:\n');}
+
+        if(value==='MLFQ'){
+            document.getElementById("log").style.display = "block";
+            $('#introduction').text('如果A的优先级 > B的优先级，运行A（不运行B）\n' +
+                '如果A的优先级 = B的优先级，轮转运行A和B\n' +
+                '工作进入系统时，放在最高优先级（最上层队列）\n' +
+                '一旦工作用完了其在某一层中的时间配额（无论中间主动放弃了多少次CPU），就降低其优先级（移入低一级队列）\n' +
+                '经过一段时间S，就将系统中所有工作重新加入最高优先级队列');
+            $('#log').val('MLFQ执行情况:\n');
+        }
+
+
+    }
+
+    function runAlgorithm(val) {
+        alert("正在传递数据:" + val);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);  // 清空画布
+        //let now_select = document.getElementById("option_id");
+        const now_select = $('#option_id').val();
+        const rows = val.split(";");
+        const data = rows.map((row) => {
+            const values = row.split(",");
+            return values.map((value) => parseInt(value));
+        });
+        const RR_time = $('#rr_time_quantum').val();
+        switch (now_select) {
+            case "FCFS":
+                alert("FCFS算法演示");
+                //调用 Fcfs.js 中的 ShowFcfs 函数,data为二维数组，可以data[]，也可以data[][]
+                ShowFCFS(data, now_select);
+                break;
+            case "SJF":
+                alert("SJF算法演示");
+                ShowSJF(data, now_select);
+                break;
+            case "RR":
+                alert("RR算法演示");
+                ShowRR(data, RR_time);
+                break;
+            case "NPPS":
+                alert("NPPS算法演示");
+                ShowNPPS(data, now_select);
+                //window.open("动态优先级调度.html");
+                break;
+            case "PPS":
+                alert("PPS算法演示");
+                ShowPPS(data, now_select);
+                //window.open("动态优先级调度.html");
+                break;
+            case "HRRN":
+                alert("HRRN算法演示");
+                ShowHRRN(data, now_select);
+                //window.open("动态优先级调度.html");
+                break;
+            case "MLFQ":
+                alert("MLFQ算法演示");
+                ShowMLFQ(data, now_select);
+                //window.open("动态优先级调度.html");
+                break;
+
+        }
+    }
+
+    const input_text = document.getElementById('input_text');
+    speedRange.addEventListener("input", function () {
+        speed = speedRange.value * 1;//value是string类型，需要处理,故*1
+    });
+    startBtn.addEventListener("click", function () {
+        runAlgorithm(input_text.value);
+    });
+
+     input_text.addEventListener('input', function() {
+        if (myselect.options[myselect.selectedIndex].value === "NPPS"||myselect.options[myselect.selectedIndex].value === "PPS") {
+            input_text.setAttribute('title', '进程ID, 到达时间, 运行时间,优先级;');
+        } else {
+            input_text.setAttribute('title', '进程ID, 到达时间, 运行时间;');
+        }
+    });
+    pauseBtn.addEventListener("click", function () {
+        if (!pause_flag) {
+            // 如果 pause_flag 为 false，即动画正在运行，则取消动画
+            //cancelAnimationFrame(animationId);
+            pauseBtn.innerText = "继续";
+            pause_flag = true;
+        } else {
+            // 如果 pause_flag 为 true，即动画已暂停，则重新开始动画
+            //animationId = requestAnimationFrame(animate);
+            pauseBtn.innerHTML = "暂停";
+            pause_flag = false;
+        }
+    });
+
+    //字体大小写
+    window.onload = function() {
+        const text1 = document.getElementById("introduction");
+        const increaseBtn1 = document.getElementById("increase-btn1");
+        const decreaseBtn1 = document.getElementById("decrease-btn1");
+
+        const textArea = document.getElementById('log');
+        const increaseBtn2 = document.getElementById('increase-btn2');
+        const decreaseBtn2 = document.getElementById('decrease-btn2');
+
+        let fontSize = 1;
+
+        increaseBtn1.addEventListener("click", function() {
+            fontSize += 0.2;
+            text1.style.fontSize = fontSize + "em";
+        });
+
+        decreaseBtn1.addEventListener("click", function() {
+            fontSize -= 0.2;
+            text1.style.fontSize = fontSize + "em";
+        });
+        increaseBtn2.addEventListener('click', function() {
+            fontSize += 0.5; // 每次增加 2px
+            textArea.style.fontSize = fontSize + 'em'; // 动态改变字体大小
+        });
+
+        decreaseBtn2.addEventListener('click', function() {
+            fontSize -= 0.5; // 每次减少 2px
+            textArea.style.fontSize = fontSize + 'em'; // 动态改变字体大小
+        });
+    };
+
+</script>
+</body>
+</html>
+
