@@ -19,7 +19,7 @@ function ShowFCFS(process, now_select) {
     let flag = 1; // 用于避免数字重影
     let Y_position;
     var infoBox = null;
-    ctx.font = "15px Arial";
+    ctx.font = "16px Arial";
     ctx.fillStyle=process[0][process[i].length-1];
     if(!isInt(now_select))
         Y_position=0;
