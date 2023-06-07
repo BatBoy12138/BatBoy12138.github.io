@@ -74,7 +74,7 @@ function ShowRR(process, RR_time) {
                     return;
             }
 
-            ctx.fillStyle = queue[0][1];
+            ctx.fillStyle = queue[0][1];//设置第一个执行进程颜色
 
             if (queue[0][0][2] >= RR_time) {//剩余运行时间大于时间片
                 if (current_time <= queue[0][0][1])
@@ -86,7 +86,7 @@ function ShowRR(process, RR_time) {
                 rectX = current_time * 30;
                 begin_X = rectX;
                 end_X = begin_X + RR_time * 30;
-                rectWidth = 30*RR_time;
+                rectWidth = 30*RR_time;//相关坐标修改
 
                 animate();
                 drawline(queue);
@@ -108,11 +108,11 @@ function ShowRR(process, RR_time) {
                         }
 
                     }
-                    queue.push(queue.shift());
+                    queue.push(queue.shift());//队头移至队尾
                 } else {//所有队列均上过处理机
                     queue.push(queue.shift());
                 }
-            } else {
+            } else {//剩余运行时间小于时间片
                 if (current_time <= queue[0][0][1])
                     begin_time = queue[0][0][1];
                 else
@@ -138,59 +138,5 @@ function ShowRR(process, RR_time) {
         //animate();
     }
 
-
-
 }
 
-//测试数据1,8,2;2,5,5;3,5,3;4,2,3    1,1,3;2,5,3   1,0,4;2,1,4;3,2,4;4,3,4
-// function ShowRR(process,RR_time){
-//     function calculateQueue(process, timeSlice) {
-//         const queue = [];
-//         let currentTime = 0;
-//         let remainingProcesses = [...process]; // 创建进程副本，用于迭代过程中的处理
-//
-//         while (remainingProcesses.length > 0) {
-//             const currentProcess = remainingProcesses[0]; // 获取队列中的下一个进程
-//             const [processId, startTime, remainingTime] = currentProcess;
-//
-//             if (remainingTime > timeSlice) {
-//                 // 当前进程剩余执行时间大于时间片大小
-//                 queue.push([processId, currentTime, currentTime + timeSlice]); // 将当前进程加入队列
-//                 currentTime += timeSlice; // 更新当前时间
-//                 currentProcess[2] -= timeSlice; // 更新当前进程的剩余执行时间
-//             } else {
-//                 // 当前进程剩余执行时间小于等于时间片大小
-//                 queue.push([processId, currentTime, currentTime + remainingTime]); // 将当前进程加入队列
-//                 currentTime += remainingTime; // 更新当前时间
-//                 currentProcess[2] = 0; // 将当前进程的剩余执行时间置为0，表示已经执行完毕
-//                 remainingProcesses.shift(); // 将当前进程从待处理进程列表中移除
-//             }
-//
-//             // 检查是否有新的进程在当前时间片内到达并加入队列
-//             for (let i = 0; i < remainingProcesses.length; i++) {
-//                 const [arrivalTime] = remainingProcesses[i];
-//                 if (arrivalTime <= currentTime) {
-//                     // 到达时间小于等于当前时间，将进程加入队列
-//                     queue.push([
-//                         remainingProcesses[i][0],
-//                         currentTime,
-//                         currentTime + timeSlice
-//                     ]);
-//                     remainingProcesses[i][1] = currentTime; // 更新进程的开始执行时间为当前时间
-//                     remainingProcesses[i][2] -= timeSlice; // 更新进程的剩余执行时间
-//                     remainingProcesses.sort((a, b) => a[2] - b[2]); // 根据剩余执行时间进行排序
-//                     remainingProcesses.splice(i, 1); // 将进程从待处理进程列表中移除
-//                     i--; // 更新索引
-//                 }
-//             }
-//         }
-//
-//         return queue;
-//     }
-//
-//     const timeSlice = 2;
-//
-//     const queue = calculateQueue(process, timeSlice);
-//     console.log(queue);
-//     ShowFCFS(queue);
-// }

@@ -20,7 +20,7 @@
 <body>
 <audio src="./resources/audio/千秋%20《古剑奇谭三》主题曲.mp3" autoplay loop="-1"></audio>
 <ul class="head">
-  <li><a href="https://baidu.com">首页</a></li>
+  <li><a href="https://baidu.com">百度</a></li>
   <li><a href="https://visualgo.net/zh" target="_blank">数据结构可视化</a></li>
   <li><a href="./html/文档.html" target="_blank">文档</a></li>
   <li style="float:right"><a href="./html/关于.html">关于</a></li>
@@ -135,8 +135,6 @@
               '经过一段时间S，就将系统中所有工作重新加入最高优先级队列');
       $('#log').val('MLFQ执行情况:\n');
     }
-
-
   }
 
   function runAlgorithm(val) {
@@ -167,22 +165,18 @@
       case "NPPS":
         alert("NPPS算法演示");
         ShowNPPS(data, now_select);
-        //window.open("动态优先级调度.html");
         break;
       case "PPS":
         alert("PPS算法演示");
         ShowPPS(data, now_select);
-        //window.open("动态优先级调度.html");
         break;
       case "HRRN":
         alert("HRRN算法演示");
         ShowHRRN(data, now_select);
-        //window.open("动态优先级调度.html");
         break;
       case "MLFQ":
         alert("MLFQ算法演示");
         ShowMLFQ(data, now_select);
-        //window.open("动态优先级调度.html");
         break;
 
     }
@@ -217,7 +211,7 @@
     }
   });
 
-  //字体大小写
+  //字体大小调节
   window.onload = function() {
     const text1 = document.getElementById("introduction");
     const increaseBtn1 = document.getElementById("increase-btn1");

@@ -3,7 +3,7 @@ function ShowHRRN(process, now_select) {
     function calculateResponseRatio(processes, currentTime) {
         const responseRatios = [];
         for (const process of processes) {
-            const [processId, arrivalTime, burstTime] = process;
+            const [processId, arrivalTime, burstTime] = process;//解构赋值：process 数组中的元素解构为单独的变量 processId、arrivalTime 和 burstTime
             if (arrivalTime > currentTime) {
                 responseRatios.push(0); // 若进程尚未到达，响应比设为0
             } else {
@@ -30,7 +30,7 @@ function ShowHRRN(process, now_select) {
                 }
             }
             logTextarea.value += logStr + "\n";
-            const maxResponseRatio = Math.max(...responseRatios);
+            const maxResponseRatio = Math.max(...responseRatios);//...responseRatios 将数组 responseRatios 展开为一系列参数
             const maxIndex = responseRatios.indexOf(maxResponseRatio);
             const [processId, arrivalTime, burstTime] = processes[maxIndex];
             const waitTime = Math.max(0, currentTime - arrivalTime);
